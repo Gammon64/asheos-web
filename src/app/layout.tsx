@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 async function getCurrentUser(): Promise<User | null> {
   try {
     // Lê o token nos cookies
-    const token = (await cookies()).get("auth-token")?.value;
+    const token = (await cookies()).get("token")?.value;
 
     if (!token) return null;
 
