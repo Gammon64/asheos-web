@@ -11,7 +11,7 @@ export interface Occurrence {
   attachments: any[];
 }
 
-enum OccurrenceStatus {
+export enum OccurrenceStatus {
   OPENED = "OPENED",
   IN_PROGRESS = "IN_PROGRESS",
   CLOSED = "CLOSED",
