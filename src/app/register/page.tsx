@@ -1,42 +1,21 @@
 "use client";
 
 import Button from "@/components/Button";
+import H1 from "@/components/H1";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
 import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
 import { signup } from "./actions";
 import { RegisterState } from "./definitions.schema";
 
-const RegisterButton = () => {
-  // Hook para saber se o form está enviando
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      disabled={pending}
-      className={
-        pending
-          ? "bg-blue-400 cursor-not-allowed"
-          : "bg-blue-600 hover:bg-blue-700"
-      }
-    >
-      {pending ? "Cadastrando..." : "Cadastrar"}
-    </Button>
-  );
-};
-
 const RegisterPage = () => {
   const initialState: RegisterState = {};
-  const [state, formAction] = useActionState(signup, initialState);
+  const [state, formAction, pending] = useActionState(signup, initialState);
 
   return (
     <Modal>
-      <h1 className="text-2xl font-bold mb-6 text-center">
-        📝 Criar Conta - asheos
-      </h1>
+      <H1>📝 Criar Conta - asheos</H1>
       <form action={formAction}>
         {/* Campo Nome */}
         <div className="mb-4">
@@ -111,7 +90,17 @@ const RegisterPage = () => {
             </p>
           ))}
 
-        <RegisterButton />
+        <Button
+          type="submit"
+          disabled={pending}
+          className={
+            pending
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }
+        >
+          {pending ? "Cadastrando..." : "Cadastrar"}
+        </Button>
       </form>
       <p className="mt-4 text-center text-sm text-gray-600">
         Já tem conta?{" "}

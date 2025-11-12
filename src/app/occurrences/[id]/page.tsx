@@ -1,0 +1,90 @@
+import H1 from "@/components/H1";
+import Modal from "@/components/Modal";
+import Card from "@/components/occurrences/Card";
+import Chip from "@/components/occurrences/Chip";
+import { api } from "@/lib/axios";
+import { Occurrence, OccurrenceStatus } from "@/types/occurrence";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import UpdateStatusForm from "./UpdateStatusForm";
+
+const getOccurrenceById = async (id: string): Promise<Occurrence | null> => {
+  const token = (await cookies()).get("token")?.value;
+  if (!token) return null;
+
+  try {
+    const response = await api.get(`/occurrences/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Falha ao buscar ocorrências:", error);
+    return null;
+  }
+};
+
+type OccurrencePageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+const OccurrencePage = async ({ params }: OccurrencePageProps) => {
+  const occurrence = await getOccurrenceById((await params).id);
+
+  if (!occurrence) notFound();
+
+  return (
+    <Modal>
+      <div className="mb-4">
+        <Link href="/occurrences" className="text-blue-600 hover:underline">
+          &larr; Voltar para Ocorrências
+        </Link>
+      </div>
+      {/* Cabeçalho */}
+      <Card>
+        <div className="flex justify-between items-start">
+          <H1>{occurrence.title}</H1>
+          <Chip status={occurrence.status} />
+        </div>
+        <div className="text-sm text-gray-500 mt-2">
+          Reportado por:{" "}
+          <span className="font-medium text-gray-700">
+            {occurrence.reportedBy.name}
+          </span>
+        </div>
+        <div className="text-sm text-gray-500">
+          Data:{" "}
+          {new Date(occurrence.createdAt).toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })}
+        </div>
+      </Card>
+
+      {/* Descrição */}
+      <Card>
+        <h2 className="text-xl font-semibold mb-3">Descrição</h2>
+        <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+          {occurrence.description}
+        </p>
+      </Card>
+
+      {/* Formulário de Atualização de Status */}
+      <Card>
+        <h2 className="text-xl font-semibold mb-4">Atualizar Status</h2>
+        <UpdateStatusForm
+          occurrenceId={occurrence.id}
+          currentStatus={occurrence.status}
+        />
+      </Card>
+
+      {/* TODO: Seção de Anexos virá aqui */}
+    </Modal>
+  );
+};
+
+export default OccurrencePage;

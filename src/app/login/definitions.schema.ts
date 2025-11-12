@@ -11,8 +11,8 @@ export const LoginSchema = z.object({
 export type LoginState = {
   errors?: string[];
   properties?: {
-    name?: { errors: string[] } | undefined;
-    email?: { errors: string[] } | undefined;
-    password?: { errors: string[] } | undefined;
+    name?: { errors: string[] };
+    email?: { errors: string[] };
+    password?: { errors: string[] };
   };
 };

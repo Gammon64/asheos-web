@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/ocorrencia"];
+const protectedRoutes = ["/occurrences"];
 const publicRoutes = ["/login", "/register", "/"];
 
 export default async function proxy(req: NextRequest) {
@@ -19,8 +19,12 @@ export default async function proxy(req: NextRequest) {
   }
 
   //   Redireciona o usuário se estiver autenticado
-  if (isPublicRoute && cookie && req.nextUrl.pathname !== "/") {
-    return NextResponse.redirect(new URL("/", req.nextUrl));
+  if (
+    isPublicRoute &&
+    cookie &&
+    !req.nextUrl.pathname.startsWith("/occurrences")
+  ) {
+    return NextResponse.redirect(new URL("/occurrences", req.nextUrl));
   }
 
   return NextResponse.next();
