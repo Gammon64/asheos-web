@@ -1,0 +1,21 @@
+import z from "zod";
+
+export const RegisterSchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
+  email: z.email({ message: "Por favor, insira um e-mail válido." }),
+  password: z
+    .string()
+    .min(6, { message: "A senha deve ter pelo menos 6 caracteres." }),
+});
+
+// Estado para o formulário de Registro
+export type RegisterState = {
+  errors?: string[];
+  properties?: {
+    name?: { errors: string[] } | undefined;
+    email?: { errors: string[] } | undefined;
+    password?: { errors: string[] } | undefined;
+  };
+};
