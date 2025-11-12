@@ -7,32 +7,12 @@ import Label from "@/components/Label";
 import Modal from "@/components/Modal";
 import Link from "next/link";
 import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
 import { login } from "./actions";
 import { LoginState } from "./definitions.schema";
 
-const LoginButton = () => {
-  // Hook para saber se o form está enviando
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      disabled={pending}
-      className={
-        pending
-          ? "bg-blue-400 cursor-not-allowed"
-          : "bg-blue-600 hover:bg-blue-700"
-      }
-    >
-      {pending ? "Entrando..." : "Entrar"}
-    </Button>
-  );
-};
-
 const LoginPage = () => {
   const initialState: LoginState = {};
-  const [state, formAction] = useActionState(login, initialState);
+  const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
     <Modal>
@@ -71,7 +51,17 @@ const LoginPage = () => {
           ))}
 
         {/* Botão de Envio */}
-        <LoginButton />
+        <Button
+          type="submit"
+          disabled={pending}
+          className={
+            pending
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }
+        >
+          {pending ? "Entrando..." : "Entrar"}
+        </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-gray-400">
