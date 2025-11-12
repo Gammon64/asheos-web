@@ -18,22 +18,20 @@ export default function Home() {
         <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
           Veja as ocorrências registradas
         </h1>
-        <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-          (TODO: Lista de ocorrências em breve.)
-        </p>
-      </div>
-      <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
         <Link
           className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
           href="/login"
         >
-          Login
+          Entrar
         </Link>
+      </div>
+      <div className="flex flex-col gap-4 text-base font-medium">
+        <p className="text-gray-700 dark:text-zinc-300">Ainda não é registrado?</p>
         <Link
           className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
           href="/register"
         >
-          Register
+          Registre-se
         </Link>
       </div>
     </main>
