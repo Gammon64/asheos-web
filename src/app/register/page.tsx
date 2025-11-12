@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/Button";
+import H1 from "@/components/H1";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
@@ -14,9 +15,7 @@ const RegisterPage = () => {
 
   return (
     <Modal>
-      <h1 className="text-2xl font-bold mb-6 text-center">
-        📝 Criar Conta - asheos
-      </h1>
+      <H1>📝 Criar Conta - asheos</H1>
       <form action={formAction}>
         {/* Campo Nome */}
         <div className="mb-4">

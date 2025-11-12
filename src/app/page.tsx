@@ -1,4 +1,5 @@
 import Welcome from "@/components/dashboard/Welcome";
+import H1 from "@/components/H1";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,9 +16,9 @@ export default function Home() {
       />
       <Welcome />
       <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-        <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+        <H1 className="max-w-xs leading-10 tracking-tight">
           Veja as ocorrências registradas
-        </h1>
+        </H1>
         <Link
           className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
           href="/login"

@@ -9,6 +9,7 @@ import Textarea from "@/components/Textarea";
 import { useActionState } from "react";
 import { createOccurrence } from "./actions";
 import { CreateOccurrenceState } from "./definitions.schema";
+import H1 from "@/components/H1";
 
 const OccurrenceCreate = () => {
   const initialState: CreateOccurrenceState = {};
@@ -19,7 +20,7 @@ const OccurrenceCreate = () => {
 
   return (
     <Modal>
-      <h1 className="text-3xl font-bold mb-6">Registrar Nova Ocorrência</h1>
+      <H1>Registrar Nova Ocorrência</H1>
       <form action={formAction} className="space-y-6">
         {/* Campo Título */}
         <div>

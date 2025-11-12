@@ -2,6 +2,7 @@
 
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
+import H1 from "@/components/H1";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
@@ -16,7 +17,7 @@ const LoginPage = () => {
 
   return (
     <Modal>
-      <h1 className="text-2xl font-bold mb-6 text-center">🔐 Login - asheos</h1>
+      <H1>🔐 Login - asheos</H1>
       <form action={formAction}>
         {/* Campo de Email */}
         <div className="mb-4">
