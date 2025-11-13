@@ -1,9 +1,9 @@
 "use server";
 
+import { api } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { redirect } from "next/navigation";
 import z from "zod";
-import { api } from "../../lib/axios";
 import { RegisterSchema, RegisterState } from "./definitions.schema";
 
 export async function signup(
