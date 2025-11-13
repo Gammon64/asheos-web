@@ -1,13 +1,13 @@
 "use client";
 
+import { updateOccurrenceStatus } from "@/actions/occurrences";
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
 import Label from "@/components/Label";
 import Select from "@/components/Select";
 import { OccurrenceStatus } from "@/types/occurrence";
+import { UpdateStatusState } from "@/zod/occurrences.definitions";
 import { useActionState } from "react";
-import { updateOccurrenceStatus } from "./actions";
-import { UpdateStatusState } from "./definitions.schema";
 
 type UpdateStatusFormProps = {
   occurrenceId: number;
@@ -43,11 +43,7 @@ const UpdateStatusForm = ({
         >
           Novo Status
         </Label>
-        <Select
-          id="status"
-          name="status"
-          defaultValue={currentStatus}
-        >
+        <Select id="status" name="status" defaultValue={currentStatus}>
           {/* Só mostra opções válidas */}
           {currentStatus === "OPENED" && (
             <>

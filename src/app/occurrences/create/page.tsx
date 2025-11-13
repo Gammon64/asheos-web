@@ -1,15 +1,15 @@
 "use client";
 
+import { createOccurrence } from "@/actions/occurrences";
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
+import H1 from "@/components/H1";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
 import Textarea from "@/components/Textarea";
+import { CreateOccurrenceState } from "@/zod/occurrences.definitions";
 import { useActionState } from "react";
-import { createOccurrence } from "./actions";
-import { CreateOccurrenceState } from "./definitions.schema";
-import H1 from "@/components/H1";
 
 const OccurrenceCreate = () => {
   const initialState: CreateOccurrenceState = {};
