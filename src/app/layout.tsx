@@ -1,3 +1,4 @@
+import Header from "@/components/dashboard/Header";
 import { AuthProvider } from "@/context/AuthContext";
 import { api } from "@/lib/axios";
 import { User } from "@/types/user";
@@ -51,7 +52,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider initialUser={user}>{children}</AuthProvider>
+        <AuthProvider initialUser={user}>
+          <Header />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
