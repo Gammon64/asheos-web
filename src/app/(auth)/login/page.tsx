@@ -1,15 +1,15 @@
 "use client";
 
+import { login } from "@/actions/auth";
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
 import H1 from "@/components/H1";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
+import { LoginState } from "@/zod/auth.definitions";
 import Link from "next/link";
 import { useActionState } from "react";
-import { login } from "./actions";
-import { LoginState } from "./definitions.schema";
 
 const LoginPage = () => {
   const initialState: LoginState = {};
