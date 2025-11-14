@@ -1,11 +1,11 @@
 "use server";
 
+import { api } from "@/lib/axios";
+import { LoginSchema, LoginState, RegisterSchema, RegisterState } from "@/zod/auth.definitions";
 import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
-import { api } from "../../lib/axios";
-import { LoginSchema, LoginState } from "./definitions.schema";
 
 export async function login(
   prevState: LoginState,
@@ -47,4 +47,41 @@ export async function login(
   }
 
   redirect("/occurrences");
+}
+
+export async function signup(
+  prevState: RegisterState,
+  formData: FormData
+): Promise<RegisterState> {
+  // Valida os dados
+  const validatedFields = RegisterSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return z.treeifyError(validatedFields.error);
+  }
+
+  const { name, email, password } = validatedFields.data;
+
+  try {
+    // Chama o Backend
+    await api.post("/auth/register", { name, email, password });
+  } catch (error) {
+    // Lida com erros (ex: 400 E-mail já existe)
+    if (error instanceof AxiosError && error.response?.status === 400) {
+      return { errors: ["Este e-mail já está cadastrado."] };
+    }
+    return { errors: ["Ocorreu um erro no servidor. Tente novamente."] };
+  }
+
+  redirect("/login");
+}
+
+export async function logout() {
+  // Deleta o cookie de autenticação
+  (await cookies()).delete("token");
+
+  // Redireciona o usuário para a página de login
+  redirect("/login");
 }

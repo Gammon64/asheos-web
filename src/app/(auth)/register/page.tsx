@@ -1,13 +1,13 @@
 "use client";
 
+import { signup } from "@/actions/auth";
 import Button from "@/components/Button";
 import H1 from "@/components/H1";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Modal from "@/components/Modal";
+import { RegisterState } from "@/zod/auth.definitions";
 import { useActionState } from "react";
-import { signup } from "./actions";
-import { RegisterState } from "./definitions.schema";
 
 const RegisterPage = () => {
   const initialState: RegisterState = {};
