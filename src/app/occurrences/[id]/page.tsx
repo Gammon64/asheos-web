@@ -3,11 +3,12 @@ import Modal from "@/components/Modal";
 import Card from "@/components/occurrences/Card";
 import Chip from "@/components/occurrences/Chip";
 import { api } from "@/lib/axios";
-import { Occurrence, OccurrenceStatus } from "@/types/occurrence";
+import { Occurrence } from "@/types/occurrence";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import UpdateStatusForm from "./UpdateStatusForm";
+import UploadAttachmentForm from "./UploadAttachmentForm";
 
 const getOccurrenceById = async (id: string): Promise<Occurrence | null> => {
   const token = (await cookies()).get("token")?.value;
@@ -82,7 +83,29 @@ const OccurrencePage = async ({ params }: OccurrencePageProps) => {
         />
       </Card>
 
-      {/* TODO: Seção de Anexos virá aqui */}
+      {/* Seção de Anexos */}
+      <Card className="flex flex-col gap-2">
+        <h2 className="text-xl font-semibold mb-4">Anexos</h2>
+
+        <div className="flex flex-col gap-2">
+          {occurrence.attachments.map((attachment) => (
+            <div key={attachment.id} className="flex flex-col items-center justify-between p-2 max-w-full border rounded-md break-all">
+              <p className="w-full">{attachment.fileName}</p>
+              <div className="flex w-full justify-end"><Link
+                href={`/api/attachment/download/${occurrence.id}/${attachment.id}`}
+                prefetch={false}
+                className="text-blue-600 hover:underline"
+              >
+                Baixar
+              </Link></div>
+            </div>
+          ))}
+        </div>
+
+        {/* Formulário de Upload */}
+        <h3 className="text-lg font-semibold mb-3 pt-4 border-t">Novo Anexo</h3>
+        <UploadAttachmentForm occurrenceId={occurrence.id} />
+      </Card>
     </Modal>
   );
 };
