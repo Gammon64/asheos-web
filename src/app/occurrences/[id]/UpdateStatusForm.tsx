@@ -37,10 +37,7 @@ const UpdateStatusForm = ({
   return (
     <form action={formAction} className="flex items-end gap-4">
       <div>
-        <Label
-          htmlFor="status"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <Label htmlFor="status" >
           Novo Status
         </Label>
         <Select id="status" name="status" defaultValue={currentStatus}>
