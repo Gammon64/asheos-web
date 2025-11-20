@@ -53,7 +53,7 @@ npm run start
 Crie um arquivo `.env.local` na raiz do `asheos-web` para configurar a URL do backend e outras variáveis. Exemplo mínimo:
 
 ```
-BACKEND_API_URL=http://localhost:8084
+BACKEND_API_URL=http://localhost:8084/api
 ```
 
 - `BACKEND_API_URL`: usada por `src/lib/axios.ts` para chamadas do servidor (RSC / Route Handlers). Ajuste conforme o endereço em que sua API estiver rodando.
