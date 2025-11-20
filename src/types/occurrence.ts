@@ -8,11 +8,18 @@ export interface Occurrence {
   createdAt: string; // strings ISO
   updatedAt: string;
   reportedBy: User;
-  attachments: any[];
+  attachments: Attachment[];
 }
 
 export enum OccurrenceStatus {
   OPENED = "OPENED",
   IN_PROGRESS = "IN_PROGRESS",
   CLOSED = "CLOSED",
+}
+
+export interface Attachment {
+  id: number;
+  fileName: string;
+  filePath: string;
+  mimeType: string;
 }

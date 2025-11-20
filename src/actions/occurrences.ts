@@ -2,10 +2,12 @@
 
 import { api } from "@/lib/axios";
 import {
+  AttachmentSchema,
   CreateOccurrenceState,
   OccurrenceSchema,
   StatusSchema,
   UpdateStatusState,
+  UploadAttachmentState,
 } from "@/zod/occurrences.definitions";
 import { AxiosError } from "axios";
 import { revalidatePath } from "next/cache";
@@ -93,6 +95,54 @@ export async function updateOccurrenceStatus(
     );
   } catch (error) {
     return { errors: ["Erro da API ao atualizar status."] };
+  }
+
+  // Limpa o cache da página de detalhes
+  revalidatePath(`/occurrences/${occurrenceId}`);
+  return {};
+}
+
+export async function uploadAttachment(
+  occurrenceId: number,
+  prevState: UploadAttachmentState,
+  formData: FormData
+): Promise<UploadAttachmentState> {
+  // Extrai os campos
+  const dataToValidate = {
+    file: formData.get("file"),
+  };
+
+  /// Valida os dados extraídos
+  const validatedFields = AttachmentSchema.safeParse(dataToValidate);
+  if (!validatedFields.success) {
+    return z.treeifyError(validatedFields.error);
+  }
+
+  const { file } = validatedFields.data;
+  const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    return { errors: ["Usuário não autenticado."] };
+  }
+
+  try {
+    const backendFormData = new FormData();
+
+    backendFormData.append("file", file, file.name);
+
+    // Chama o Backend (asheos-api)
+    await api.post(
+      `/occurrences/${occurrenceId}/attachments`,
+      backendFormData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.error("🚀 ~ uploadAttachment ~ error:", error);
+    return { errors: ["Erro da API ao enviar o anexo."] };
   }
 
   // Limpa o cache da página de detalhes
