@@ -102,6 +102,30 @@ export async function updateOccurrenceStatus(
   return {};
 }
 
+export async function deleteOccurrence(occurrenceId: number) {
+  const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    return { errors: ["Usuário não autenticado."] };
+  }
+
+  try {
+    // Chama o Backend (asheos-api)
+    await api.delete(`/occurrences/${occurrenceId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    console.error("🚀 ~ deleteOccurrence ~ error:", error);
+    return { errors: ["Erro da API ao deletar ocorrência."] };
+  }
+
+  // Limpa o cache da página de lista
+  revalidatePath("/occurrences");
+
+  // Redireciona de volta para a lista
+  redirect("/occurrences");
+}
+
 export async function uploadAttachment(
   occurrenceId: number,
   prevState: UploadAttachmentState,

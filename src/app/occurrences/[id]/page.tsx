@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DeleteAttachmentButton from "./DeleteAttachmentButton";
+import DeleteOccurrenceButton from "./DeleteOccurrenceButton";
 import DownloadAttachmentButton from "./DownloadAttachmentButton";
 import UpdateStatusForm from "./UpdateStatusForm";
 import UploadAttachmentForm from "./UploadAttachmentForm";
@@ -110,6 +111,12 @@ const OccurrencePage = async ({ params }: OccurrencePageProps) => {
         {/* Formulário de Upload */}
         <h3 className="text-lg font-semibold mb-3 pt-4 border-t">Novo Anexo</h3>
         <UploadAttachmentForm occurrenceId={occurrence.id} />
+      </Card>
+
+      {/* Painel de ações */}
+      <Card>
+        <h2 className="text-xl font-semibold mb-4">Ações</h2>
+        <DeleteOccurrenceButton occurrenceId={occurrence.id} />
       </Card>
     </Modal>
   );
