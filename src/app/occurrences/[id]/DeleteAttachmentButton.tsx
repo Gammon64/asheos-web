@@ -7,7 +7,7 @@ const DeleteAttachmentButton = (
     { occurrenceId, attachmentId }: { occurrenceId: number; attachmentId: number }
 ) => {
     return (
-        <DeleteButton onClick={() => deleteAttachment(occurrenceId, attachmentId) } className="bg-red-600 hover:bg-red-700 dark:bg-red-800 dark:hover:bg-red-900">
+        <DeleteButton onClick={() => deleteAttachment(occurrenceId, attachmentId)}>
             Excluir
         </DeleteButton>
     )
