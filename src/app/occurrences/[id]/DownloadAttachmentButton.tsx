@@ -23,7 +23,8 @@ const DownloadAttachmentButton = (
     }
 
     return (
-        <Button onClick={() => getDownloadAttachment(occurrenceId, attachmentId)}>
+        <Button onClick={() => getDownloadAttachment(occurrenceId, attachmentId)}
+        className="bg-green-600 hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900">
             Baixar
         </Button>
     )
