@@ -149,3 +149,45 @@ export async function uploadAttachment(
   revalidatePath(`/occurrences/${occurrenceId}`);
   return {};
 }
+
+export async function downloadAttachment(
+  occurrenceId: number,
+  attachmentId: number
+) {
+  const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    return { errors: ["Usuário não autenticado."] };
+  }
+
+  try {
+    // Chama o Backend (asheos-api)
+    const response = await api.get(
+      `/occurrences/${occurrenceId}/attachments/${attachmentId}/download`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "arraybuffer", // Diz ao Axios para buscar os bytes
+      }
+    );
+    console.log(
+      "🚀 ~ downloadAttachment ~ headers:",
+      response.headers["content-disposition"]
+        .split("filename=")[1]
+        .replace(/"/g, "")
+    );
+
+    return {
+      data: new Blob([response.data], {
+        type: response.headers["content-type"],
+      }),
+      filename: response.headers["content-disposition"]
+        ? response.headers["content-disposition"]
+            .split("filename=")[1]
+            .replace(/"/g, "")
+        : "attachment",
+    };
+  } catch (error) {
+    console.error("🚀 ~ uploadAttachment ~ error:", error);
+    return { errors: ["Erro da API ao enviar o anexo."] };
+  }
+}

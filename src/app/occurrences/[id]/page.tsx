@@ -1,3 +1,4 @@
+import Button from "@/components/Button";
 import H1 from "@/components/H1";
 import Modal from "@/components/Modal";
 import Card from "@/components/occurrences/Card";
@@ -9,6 +10,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import UpdateStatusForm from "./UpdateStatusForm";
 import UploadAttachmentForm from "./UploadAttachmentForm";
+import DownloadAttachmentButton from "./DownloadAttachmentButton";
 
 const getOccurrenceById = async (id: string): Promise<Occurrence | null> => {
   const token = (await cookies()).get("token")?.value;
@@ -91,13 +93,12 @@ const OccurrencePage = async ({ params }: OccurrencePageProps) => {
           {occurrence.attachments.map((attachment) => (
             <div key={attachment.id} className="flex flex-col items-center justify-between p-2 max-w-full border rounded-md break-all">
               <p className="w-full">{attachment.fileName}</p>
-              <div className="flex w-full justify-end"><Link
-                href={`/api/attachment/download/${occurrence.id}/${attachment.id}`}
-                prefetch={false}
-                className="text-blue-600 hover:underline"
-              >
-                Baixar
-              </Link></div>
+              <div className="flex w-full justify-end">
+                <DownloadAttachmentButton
+                  occurrenceId={occurrence.id}
+                  attachmentId={attachment.id} 
+                />
+              </div>
             </div>
           ))}
         </div>
