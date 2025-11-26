@@ -1,4 +1,3 @@
-import Button from "@/components/Button";
 import H1 from "@/components/H1";
 import Modal from "@/components/Modal";
 import Card from "@/components/occurrences/Card";
@@ -8,9 +7,10 @@ import { Occurrence } from "@/types/occurrence";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import DeleteAttachmentButton from "./DeleteAttachmentButton";
+import DownloadAttachmentButton from "./DownloadAttachmentButton";
 import UpdateStatusForm from "./UpdateStatusForm";
 import UploadAttachmentForm from "./UploadAttachmentForm";
-import DownloadAttachmentButton from "./DownloadAttachmentButton";
 
 const getOccurrenceById = async (id: string): Promise<Occurrence | null> => {
   const token = (await cookies()).get("token")?.value;
@@ -93,10 +93,14 @@ const OccurrencePage = async ({ params }: OccurrencePageProps) => {
           {occurrence.attachments.map((attachment) => (
             <div key={attachment.id} className="flex flex-col items-center justify-between p-2 max-w-full border rounded-md break-all">
               <p className="w-full">{attachment.fileName}</p>
-              <div className="flex w-full justify-end">
+              <div className="flex w-full gap-2">
                 <DownloadAttachmentButton
                   occurrenceId={occurrence.id}
-                  attachmentId={attachment.id} 
+                  attachmentId={attachment.id}
+                />
+                <DeleteAttachmentButton
+                  occurrenceId={occurrence.id}
+                  attachmentId={attachment.id}
                 />
               </div>
             </div>

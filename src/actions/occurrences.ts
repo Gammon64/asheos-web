@@ -191,3 +191,31 @@ export async function downloadAttachment(
     return { errors: ["Erro da API ao enviar o anexo."] };
   }
 }
+
+export async function deleteAttachment(
+  occurrenceId: number,
+  attachmentId: number
+) {
+  const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    return { errors: ["Usuário não autenticado."] };
+  }
+
+  try {
+    // Chama o Backend (asheos-api)
+    await api.delete(
+      `/occurrences/${occurrenceId}/attachments/${attachmentId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    console.error("🚀 ~ deleteAttachment ~ error:", error);
+    return { errors: ["Erro da API ao deletar o anexo."] };
+  }
+
+  // Limpa o cache da página de detalhes
+  revalidatePath(`/occurrences/${occurrenceId}`);
+  return {};
+}
