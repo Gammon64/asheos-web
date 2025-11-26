@@ -37,6 +37,8 @@ async function getCurrentUser(): Promise<User | null> {
     });
     return response.data;
   } catch (error) {
+    // Se der erro (token inválido, etc), remove o cookie e retorna null
+    (await cookies()).delete("token");
     return null;
   }
 }
