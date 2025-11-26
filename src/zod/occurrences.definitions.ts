@@ -34,3 +34,21 @@ export type UpdateStatusState = {
     status?: { errors: string[] };
   };
 };
+
+// Schema Zod para Upload de Anexo
+export const AttachmentSchema = z.object({
+  file: z
+    .instanceof(File, { message: "Por favor, envie um arquivo." })
+    .refine((file) => file.size > 0, "O arquivo não pode estar vazio.")
+    .refine(
+      (file) => file.size < 10 * 1024 * 1024,
+      "O arquivo deve ser menor que 10MB."
+    ), // Limite de 10MB
+});
+
+export type UploadAttachmentState = {
+  errors?: string[];
+  properties?: {
+    file?: { errors: string[] };
+  };
+};
