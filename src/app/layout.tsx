@@ -1,11 +1,13 @@
 import Header from "@/components/dashboard/Header";
 import { AuthProvider } from "@/context/AuthContext";
-import { api } from "@/lib/axios";
+import { FetchError, http } from "@/lib/fetch";
 import { User } from "@/types/user";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
+
+export const dynamic = "force-dynamic";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,21 +26,13 @@ export const metadata: Metadata = {
 
 async function getCurrentUser(): Promise<User | null> {
   try {
-    // Lê o token nos cookies
-    const token = (await cookies()).get("token")?.value;
-
-    if (!token) return null;
-
     // Chama o /users/me do asheos-api
-    const response = await api.get("/users/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await http.get("/users/me");
     return response.data;
   } catch (error) {
-    // Se der erro (token inválido, etc), remove o cookie e retorna null
-    (await cookies()).delete("token");
+    if (error instanceof FetchError && error.response.status === 401)
+      // Se der erro (token inválido, etc), remove o cookie e retorna null
+      (await cookies()).delete("token");
     return null;
   }
 }

@@ -2,9 +2,8 @@ import H1 from "@/components/H1";
 import Modal from "@/components/Modal";
 import Card from "@/components/occurrences/Card";
 import Chip from "@/components/occurrences/Chip";
-import { api } from "@/lib/axios";
+import { http } from "@/lib/fetch";
 import { Occurrence } from "@/types/occurrence";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DeleteAttachmentButton from "./DeleteAttachmentButton";
@@ -13,16 +12,11 @@ import DownloadAttachmentButton from "./DownloadAttachmentButton";
 import UpdateStatusForm from "./UpdateStatusForm";
 import UploadAttachmentForm from "./UploadAttachmentForm";
 
-const getOccurrenceById = async (id: string): Promise<Occurrence | null> => {
-  const token = (await cookies()).get("token")?.value;
-  if (!token) return null;
+export const dynamic = "force-dynamic";
 
+const getOccurrenceById = async (id: string): Promise<Occurrence | null> => {
   try {
-    const response = await api.get(`/occurrences/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await http.get(`/occurrences/${id}`);
     return response.data;
   } catch (error) {
     console.error("Falha ao buscar ocorrências:", error);

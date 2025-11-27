@@ -1,6 +1,6 @@
 "use server";
 
-import { api } from "@/lib/axios";
+import { FetchError, http } from "@/lib/fetch";
 import {
   AttachmentSchema,
   CreateOccurrenceState,
@@ -9,9 +9,7 @@ import {
   UpdateStatusState,
   UploadAttachmentState,
 } from "@/zod/occurrences.definitions";
-import { AxiosError } from "axios";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
 
@@ -32,22 +30,13 @@ export async function createOccurrence(
   }
 
   const { title, description } = validatedFields.data;
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return { errors: ["Usuário não autenticado."] };
-  }
 
   try {
     // Chama o Backend (asheos-api)
-    await api.post(
-      "/occurrences",
-      { title, description },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    await http.post("/occurrences", { title, description });
   } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error("Erro da API:", error.response?.data);
+    if (error instanceof FetchError) {
+      console.error("Erro da API:", error.response.data);
       return { errors: ["Erro da API ao criar ocorrência."] };
     }
     return { errors: ["Ocorreu um erro no servidor. Tente novamente."] };
@@ -77,22 +66,10 @@ export async function updateOccurrenceStatus(
   }
 
   const { status } = validatedFields.data;
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return { errors: ["Usuário não autenticado."] };
-  }
 
   try {
     // Chama o Backend (asheos-api)
-    await api.patch(
-      `/occurrences/${occurrenceId}/status`,
-      null, // O corpo é nulo
-      {
-        params: { status }, // O status vai como Query Param
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    await http.patch(`/occurrences/${occurrenceId}/status?status=${status}`);
   } catch (error) {
     return { errors: ["Erro da API ao atualizar status."] };
   }
@@ -103,19 +80,10 @@ export async function updateOccurrenceStatus(
 }
 
 export async function deleteOccurrence(occurrenceId: number) {
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return { errors: ["Usuário não autenticado."] };
-  }
-
   try {
     // Chama o Backend (asheos-api)
-    await api.delete(`/occurrences/${occurrenceId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await http.delete(`/occurrences/${occurrenceId}`);
   } catch (error) {
-    console.error("🚀 ~ deleteOccurrence ~ error:", error);
     return { errors: ["Erro da API ao deletar ocorrência."] };
   }
 
@@ -143,11 +111,6 @@ export async function uploadAttachment(
   }
 
   const { file } = validatedFields.data;
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return { errors: ["Usuário não autenticado."] };
-  }
 
   try {
     const backendFormData = new FormData();
@@ -155,17 +118,11 @@ export async function uploadAttachment(
     backendFormData.append("file", file, file.name);
 
     // Chama o Backend (asheos-api)
-    await api.post(
+    await http.post(
       `/occurrences/${occurrenceId}/attachments`,
-      backendFormData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      backendFormData
     );
   } catch (error) {
-    console.error("🚀 ~ uploadAttachment ~ error:", error);
     return { errors: ["Erro da API ao enviar o anexo."] };
   }
 
@@ -178,37 +135,20 @@ export async function downloadAttachment(
   occurrenceId: number,
   attachmentId: number
 ) {
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return { errors: ["Usuário não autenticado."] };
-  }
-
   try {
     // Chama o Backend (asheos-api)
-    const response = await api.get(
-      `/occurrences/${occurrenceId}/attachments/${attachmentId}/download`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: "arraybuffer", // Diz ao Axios para buscar os bytes
-      }
-    );
-    console.log(
-      "🚀 ~ downloadAttachment ~ headers:",
-      response.headers["content-disposition"]
-        .split("filename=")[1]
-        .replace(/"/g, "")
+    const response = await http.get(
+      `/occurrences/${occurrenceId}/attachments/${attachmentId}/download`
     );
 
+    const contentDisposition = response.headers.get("content-disposition");
+    const filename = contentDisposition
+      ? contentDisposition.split("filename=")[1].replace(/"/g, "")
+      : "attachment";
+
     return {
-      data: new Blob([response.data], {
-        type: response.headers["content-type"],
-      }),
-      filename: response.headers["content-disposition"]
-        ? response.headers["content-disposition"]
-            .split("filename=")[1]
-            .replace(/"/g, "")
-        : "attachment",
+      data: await response.blob(),
+      filename,
     };
   } catch (error) {
     console.error("🚀 ~ uploadAttachment ~ error:", error);
@@ -220,22 +160,12 @@ export async function deleteAttachment(
   occurrenceId: number,
   attachmentId: number
 ) {
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return { errors: ["Usuário não autenticado."] };
-  }
-
   try {
     // Chama o Backend (asheos-api)
-    await api.delete(
-      `/occurrences/${occurrenceId}/attachments/${attachmentId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+    await http.delete(
+      `/occurrences/${occurrenceId}/attachments/${attachmentId}`
     );
   } catch (error) {
-    console.error("🚀 ~ deleteAttachment ~ error:", error);
     return { errors: ["Erro da API ao deletar o anexo."] };
   }
 
