@@ -30,6 +30,9 @@ class FetchError extends Error {
 }
 
 class FetchImpl {
+  private headers = new Headers();
+  private body?: any;
+
   constructor() {}
 
   private async api(path: string, init?: RequestInit) {
@@ -37,17 +40,18 @@ class FetchImpl {
     const apiPrefix = "/api";
     const url = new URL(apiPrefix.concat(path), baseURL);
 
-    const token = (await cookies()).get("token")?.value;
+    this.headers = new Headers(init?.headers);
+    this.body = init?.body;
 
-    const headers = new Headers(init?.headers);
-
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
+    // Lida com token e header de autorização
+    await this.handleAuthorization();
+    // Lida com o Content-Type e body
+    this.handleContentType();
 
     const response = await fetch(url.toString(), {
       ...init,
-      headers,
+      headers: this.headers,
+      body: this.body,
     });
 
     let responseData: any = null;
@@ -60,16 +64,36 @@ class FetchImpl {
     const fetchResponse = { ...response, data: responseData };
 
     if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`, fetchResponse);
       throw new FetchError(
         `HTTP error! status: ${response.status}`,
         fetchResponse,
         init?.method || "GET",
         url.toString(),
-        headers
+        this.headers
       );
     }
 
     return fetchResponse;
+  }
+
+  private async handleAuthorization() {
+    const token = (await cookies()).get("token")?.value;
+
+    if (token) {
+      this.headers.set("Authorization", `Bearer ${token}`);
+    }
+  }
+
+  private handleContentType() {
+    const isFormData = this.body && this.body instanceof FormData;
+
+    if (isFormData) {
+      this.headers.delete("Content-Type");
+    } else {
+      this.headers.set("Content-Type", "application/json");
+      this.body = JSON.stringify(this.body);
+    }
   }
 
   async get(path: string, init?: RequestInit) {
@@ -79,38 +103,26 @@ class FetchImpl {
     });
   }
 
-  async post(path: string, body: unknown, init?: RequestInit) {
+  async post(path: string, body?: any, init?: RequestInit) {
     return this.api(path, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...init?.headers,
-      },
-      body: JSON.stringify(body),
+      body,
       ...init,
     });
   }
 
-  async patch(path: string, body?: unknown, init?: RequestInit) {
+  async patch(path: string, body?: any, init?: RequestInit) {
     return this.api(path, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        ...init?.headers,
-      },
-      body: JSON.stringify(body),
+      body,
       ...init,
     });
   }
 
-  async put(path: string, body: unknown, init?: RequestInit) {
+  async put(path: string, body?: any, init?: RequestInit) {
     return this.api(path, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...init?.headers,
-      },
-      body: JSON.stringify(body),
+      body,
       ...init,
     });
   }
