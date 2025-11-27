@@ -1,8 +1,12 @@
 "use server";
 
-import { api } from "@/lib/axios";
-import { LoginSchema, LoginState, RegisterSchema, RegisterState } from "@/zod/auth.definitions";
-import { AxiosError } from "axios";
+import { FetchError, http } from "@/lib/fetch";
+import {
+  LoginSchema,
+  LoginState,
+  RegisterSchema,
+  RegisterState,
+} from "@/zod/auth.definitions";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
@@ -27,7 +31,7 @@ export async function login(
 
   try {
     // Chama o Backend
-    const response = await api.post("/auth/login", { email, password });
+    const response = await http.post("/auth/login", { email, password });
     const { token } = response.data;
 
     // Define o Cookie HttpOnly
@@ -40,7 +44,7 @@ export async function login(
   } catch (error) {
     console.error("🚀 ~ login ~ error:", error);
     // Lida com erros (ex: 401 do backend)
-    if (error instanceof AxiosError && error.response?.status === 401) {
+    if (error instanceof FetchError && error.response.status === 401) {
       return { errors: ["E-mail ou senha inválidos."] };
     }
     return { errors: ["Ocorreu um erro no servidor. Tente novamente."] };
@@ -66,10 +70,10 @@ export async function signup(
 
   try {
     // Chama o Backend
-    await api.post("/auth/register", { name, email, password });
+    await http.post("/auth/register", { name, email, password });
   } catch (error) {
     // Lida com erros (ex: 400 E-mail já existe)
-    if (error instanceof AxiosError && error.response?.status === 400) {
+    if (error instanceof FetchError && error.response.status === 400) {
       return { errors: ["Este e-mail já está cadastrado."] };
     }
     return { errors: ["Ocorreu um erro no servidor. Tente novamente."] };

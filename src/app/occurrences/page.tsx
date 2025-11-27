@@ -1,20 +1,14 @@
 import H1 from "@/components/H1";
 import Chip from "@/components/occurrences/Chip";
-import { api } from "@/lib/axios";
+import { http } from "@/lib/fetch";
 import { Occurrence } from "@/types/occurrence";
-import { cookies } from "next/headers";
 import Link from "next/link";
 
-const getOccurrences = async (): Promise<Occurrence[]> => {
-  const token = (await cookies()).get("token")?.value;
-  if (!token) return [];
+export const dynamic = "force-dynamic";
 
+const getOccurrences = async (): Promise<Occurrence[]> => {
   try {
-    const response = await api.get("/occurrences", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await http.get("/occurrences");
     return response.data;
   } catch (error) {
     console.error("Falha ao buscar ocorrências:", error);
