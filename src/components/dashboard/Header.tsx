@@ -24,6 +24,12 @@ const Header = () => {
               >
                 Ocorrências
               </Link>
+              <Link
+                href="/profile"
+                className="text-gray-600 hover:text-black"
+              >
+                Perfil
+              </Link>
 
               {/* O Logout é um formulário que chama a action logout */}
               <form action={logout}>
