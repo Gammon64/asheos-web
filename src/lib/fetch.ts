@@ -1,7 +1,17 @@
 import { cookies } from "next/headers";
 
+interface FetchResponse {
+  status: number;
+  statusText: string;
+  ok: boolean;
+  url: string;
+  headers: Headers;
+  blob: () => Promise<Blob>;
+  data: any;
+}
+
 class FetchError extends Error {
-  response: Response & { data?: any };
+  response: FetchResponse;
   config: {
     method: string;
     url: string;
@@ -10,7 +20,7 @@ class FetchError extends Error {
 
   constructor(
     message: string,
-    response: Response & { data?: any },
+    response: FetchResponse,
     method: string,
     url: string,
     headers: Headers
@@ -61,7 +71,15 @@ class FetchImpl {
       responseData = response.statusText;
     }
 
-    const fetchResponse = { ...response, data: responseData };
+    const fetchResponse: FetchResponse = {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      url: response.url,
+      headers: response.headers,
+      blob: response.blob,
+      data: responseData,
+    };
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}`, fetchResponse);
