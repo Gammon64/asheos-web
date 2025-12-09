@@ -63,16 +63,12 @@ const OccurrenceCreate = () => {
         <Button
           type="submit"
           disabled={pending}
-          className={
-            pending
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-          }
+          className="bg-blue-600 hover:bg-blue-700"
         >
           {pending ? "Criando..." : "Criar Ocorrência"}
         </Button>
       </form>
-    </Modal>
+    </Modal >
   );
 };
 

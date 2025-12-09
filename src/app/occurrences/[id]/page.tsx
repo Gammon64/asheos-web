@@ -1,16 +1,16 @@
 import H1 from "@/components/H1";
 import Modal from "@/components/Modal";
-import Card from "@/components/occurrences/Card";
+import Card from "@/components/Card";
 import Chip from "@/components/occurrences/Chip";
 import { http } from "@/lib/fetch";
 import { Occurrence } from "@/types/occurrence";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import DeleteAttachmentButton from "./DeleteAttachmentButton";
-import DeleteOccurrenceButton from "./DeleteOccurrenceButton";
-import DownloadAttachmentButton from "./DownloadAttachmentButton";
-import UpdateStatusForm from "./UpdateStatusForm";
-import UploadAttachmentForm from "./UploadAttachmentForm";
+import DeleteAttachmentButton from "../../../components/occurrences/DeleteAttachmentButton";
+import DeleteOccurrenceButton from "../../../components/occurrences/DeleteOccurrenceButton";
+import DownloadAttachmentButton from "../../../components/occurrences/DownloadAttachmentButton";
+import UpdateStatusForm from "@/components/occurrences/UpdateStatusForm";
+import UploadAttachmentForm from "../../../components/occurrences/UploadAttachmentForm";
 
 export const dynamic = "force-dynamic";
 

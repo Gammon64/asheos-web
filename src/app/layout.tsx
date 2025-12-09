@@ -30,9 +30,12 @@ async function getCurrentUser(): Promise<User | null> {
     const response = await http.get("/users/me");
     return response.data;
   } catch (error) {
-    if (error instanceof FetchError && error.response.status === 401)
+    if (error instanceof FetchError && error.response.status === 401) {
       // Se der erro (token inválido, etc), remove o cookie e retorna null
-      (await cookies()).delete("token");
+      const cookiejar = await cookies();
+      if (cookiejar.has("token"))
+        cookiejar.delete("token");
+    }
     return null;
   }
 }

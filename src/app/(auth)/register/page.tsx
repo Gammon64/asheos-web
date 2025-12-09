@@ -93,11 +93,7 @@ const RegisterPage = () => {
         <Button
           type="submit"
           disabled={pending}
-          className={
-            pending
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-          }
+          className="bg-blue-600 hover:bg-blue-700"
         >
           {pending ? "Cadastrando..." : "Cadastrar"}
         </Button>

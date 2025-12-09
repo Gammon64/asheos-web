@@ -65,9 +65,7 @@ const UpdateStatusForm = ({
       <Button
         type="submit"
         disabled={pending}
-        className={
-          pending ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
-        }
+        className="bg-indigo-600 hover:bg-indigo-700"
       >
         {pending ? "Salvando..." : "Salvar"}
       </Button>
