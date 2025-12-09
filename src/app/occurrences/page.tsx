@@ -1,4 +1,5 @@
 import H1 from "@/components/H1";
+import Modal from "@/components/Modal";
 import Chip from "@/components/occurrences/Chip";
 import { http } from "@/lib/fetch";
 import { Occurrence } from "@/types/occurrence";
@@ -37,9 +38,9 @@ const OccurrencePage = async () => {
       ) : (
         <div className="space-y-4">
           {occurrences.map((occ) => (
-            <div
+            <Modal
               key={occ.id}
-              className="bg-white dark:bg-black p-4 rounded-lg shadow border border-gray-200 dark:border-gray-800"
+              className="w-full"
             >
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">{occ.title}</h2>
@@ -58,7 +59,7 @@ const OccurrencePage = async () => {
                   Detalhes
                 </Link>
               </div>
-            </div>
+            </Modal>
           ))}
         </div>
       )}
